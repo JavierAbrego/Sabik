@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<REST>
+    <name>NombreDelServicio</name>
+    <input>parametro1</input>
+    <input>parametro2</input>
+    <var>
+        <name>nuevaVariable</name>
+        <sqlQueryAndGetResult>SELECT nombre FROM Tabla WHERE x=$parametro1</sqlQueryAndGetResult>
+    </var>
+    <output>nuevaVariable</output>        
+</REST>
+
+<REST>
+    <name>NombreDelServicio2</name>
+    <input>parametro1</input>
+    <input>parametro2</input>
+    <var>
+        <name>nuevaVariable</name>
+        <sqlQueryAndGetResult>SELECT nombre FROM Tabla WHERE x=$parametro1</sqlQueryAndGetResult>
+    </var>
+    <output>nuevaVariable</output>        
+</REST>
+
+
+
