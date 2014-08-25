@@ -5,9 +5,13 @@ import java.util.List;
 
 
 public class VariableList {
-    private List<Variable> vars =  new ArrayList<>();
-    public void addVariable(String name, String type){
+    private final List<Variable> vars =  new ArrayList<>();
     
+    public void addVariable(String name, String type){
+        Variable var =  new Variable();
+        var.setName(name);
+        var.setType(type);
+        vars.add(var);
     }
     
     public void addVariable(String name){
@@ -15,11 +19,22 @@ public class VariableList {
     }
     
     public boolean variableExists(String name){
+        for (Variable variable : vars) {
+            if(variable.getName().equals(name))
+                return true;
+        }
         return false;
     }
     
     public void removeVariable(String name){
-    
+        int index = 0;
+        for (Variable variable : vars) {
+            if(variable.getName().equals(name)){
+                vars.remove(index);
+                return;
+            }
+            index++;
+        }
     }
     
     

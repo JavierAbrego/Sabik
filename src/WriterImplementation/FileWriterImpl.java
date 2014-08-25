@@ -4,10 +4,8 @@ import WriterInterface.FileWriterInterface;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,6 +14,12 @@ import java.util.logging.Logger;
 public class FileWriterImpl implements FileWriterInterface{
 
     private static FileWriterImpl _fileWriter;
+    
+    private FileWriterImpl() {
+        if( _fileWriter != null ) {
+            throw new InstantiationError( "More instances of this object cannot be created." );
+        }
+    }
     
     private synchronized  static void createInstance(){
         if(_fileWriter==null){
@@ -46,6 +50,7 @@ public class FileWriterImpl implements FileWriterInterface{
         return file;
     }
 
+    
     @Override
     public void writeLine(String line, File file) {
          BufferedWriter writer;
