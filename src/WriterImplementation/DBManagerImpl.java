@@ -1,6 +1,7 @@
 package WriterImplementation;
 
-import Models.DatabaseConfig;
+import Exception.DBManagerException;
+import Model.DatabaseConfig;
 import WriterInterface.DBManagerInterface;
 import java.util.HashMap;
 
@@ -34,9 +35,16 @@ public class DBManagerImpl implements DBManagerInterface{
     }
 
     @Override
-    public void addDatabaseConfig(DatabaseConfig dataBaseConfig) {
-        dbConfigs.put(dataBaseConfig.getAlias(), dataBaseConfig);        
+    public void addDatabaseConfig(DatabaseConfig dataBaseConfig) throws DBManagerException{
+        if(databaseAliasExists(dataBaseConfig.getAlias())){
+            throw new DBManagerException("A database with the alias "+dataBaseConfig.getAlias()+" already exists.");
+        }else{
+            dbConfigs.put(dataBaseConfig.getAlias(), dataBaseConfig);        
+        }
     }
     
+    private boolean databaseAliasExists(String alias){
+        return dbConfigs.containsKey(alias);
+    }
 
 }
