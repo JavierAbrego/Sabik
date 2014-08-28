@@ -1,11 +1,12 @@
 package WriterInterface;
 
-import Models.DatabaseConfig;
+import Exception.DBManagerException;
+import Model.DatabaseConfig;
 
 
 public interface DBManagerInterface {
     
     public DatabaseConfig getDatabaseConfig(String alias);
-    public void addDatabaseConfig(DatabaseConfig dataBaseConfig);
+    public void addDatabaseConfig(DatabaseConfig dataBaseConfig) throws DBManagerException;
     
 }
