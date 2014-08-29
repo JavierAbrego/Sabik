@@ -3,13 +3,15 @@ package WriterImplementation;
 import Exception.DBManagerException;
 import Exception.VariableManagerException;
 import Model.DatabaseConfig;
+import Model.Variable;
+import Model.VariableList;
 import WriterInterface.GenericWriterInterface;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 public class PHPGenericWriterImpl implements GenericWriterInterface {
    
@@ -111,10 +113,41 @@ public class PHPGenericWriterImpl implements GenericWriterInterface {
         FileWriterImpl.getInstace().writeLine(phpCode, f);
     }
     
-    
+    @Override
+    public void beginTransaction(String path){
+    	String phpCode="try {\n"+
+    					"	$dbn->beginTransaction();\n";
+    	try {
+			FileWriterImpl.getInstace().writeLine(phpCode, FileWriterImpl.getInstace().fileCreate(path));
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
+    }
     
     @Override
-    public void executeSqlQuery(String path, String query) {
+    public void endTransaction(String path){
+    	String phpCode = " $db->commit();\n" +
+    			"} catch(PDOException $ex) {\n" +
+    			"    //Something went wrong rollback!\n" +
+    			"    $db->rollBack();\n" +
+    			"    echo $ex->getMessage();\n" +
+    			"}";
+		try {
+			FileWriterImpl.getInstace().writeLine(phpCode, FileWriterImpl.getInstace().fileCreate(path));
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
+    }
+    
+    /* (non-Javadoc)
+     * example of query
+     * $stmt = $db->prepare("UPDATE table SET name=? WHERE id=?");
+     * $stmt->execute(array($name, $id));
+     * $affected_rows = $stmt->rowCount();
+     * @see WriterInterface.GenericWriterInterface#executeSqlQuery(java.lang.String, java.lang.String, java.util.List)
+     */
+    @Override
+    public void executeSqlQuery(String path, String query, List<Variable> queryParameters){
          File f;
         try {
             f = FileWriterImpl.getInstace().fileCreate(path);
@@ -125,31 +158,54 @@ public class PHPGenericWriterImpl implements GenericWriterInterface {
         FileWriterImpl.getInstace().writeLine("$dbn->query($sqlQuery);", f);
         String phpCode= "try {\n" +
                         "$sqlQuery=\""+query+"\"; \n"+
-                        "    $dbn->query($sqlQuery); \n" +
-                        "} catch(PDOException $ex) {\n" +
+                        "   $stmt = $dbn->prepare($sqlQuery); \n";
+        boolean useArrayOfParameters = false;
+        if(queryParameters!=null){
+        	if(queryParameters.size()>0){
+        		useArrayOfParameters= true;
+        	}
+        	
+        }
+        if(useArrayOfParameters){
+        	phpCode+="$stmt->execute(array(";
+        	int paramNumber = 0;
+        	for (Variable variable : queryParameters) {
+        		if(paramNumber!=0){
+        			phpCode+= ", ";
+        		}
+        		phpCode+= "$"+variable.getName()+" ";
+			}
+        	phpCode+= "));\n";
+        }else{
+        	phpCode+="$stmt->execute();";
+        }
+        phpCode += "} catch(PDOException $ex) {\n" +
                         "    echo \"An Error occured!\"; \n" +
                         "}";
         FileWriterImpl.getInstace().writeLine(phpCode, f);
     }
 
     @Override
-    public void executeSqlQueryAndGetResultInVariable(String path, String query, String variableName) throws VariableManagerException{
-        File f;
+    public void executeSqlQueryAndGetResultInVariable(String path, String query, List<Variable> queryParameters, String variableName) throws VariableManagerException{
+        executeSqlQuery(path, query, queryParameters);
         try {
-            f = FileWriterImpl.getInstace().fileCreate(path);
-        } catch (IOException ex) {
-            Logger.getLogger(PHPGenericWriterImpl.class.getName()).log(Level.SEVERE, null, ex);
-            return;
-        }        
-        String phpCode= "$"+variableName+" = null;"+
-                        "try {\n" +
-                        "   $sqlQuery=\""+query+"\"; \n"+
-                        "   $"+variableName+" = $dbn->query($sqlQuery); \n" +
-                        "} catch(PDOException $ex) {\n" +
-                        "    echo \"An Error occured!\"; \n" +
-                        "}";        
-        FileWriterImpl.getInstace().writeLine(phpCode, f);        
-        VariableManagerImpl.getInstace().addVariable(variableName, path);
+			FileWriterImpl.getInstace().writeLine("$"+variableName+"= $stmt->fetchAll(PDO::FETCH_ASSOC);", FileWriterImpl.getInstace().fileCreate(path));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}        
+        VariableManagerImpl.getInstace().addVariable(variableName, path);    	    
+    }
+    
+    @Override
+    public void executeSqlUpdateAndGetAffectedRowsNumberIntoVariable(String path, String query, List<Variable> queryParameters, String resultVariableName) throws VariableManagerException{
+    	executeSqlQuery(path, query, queryParameters);
+        try {
+			FileWriterImpl.getInstace().writeLine("$"+resultVariableName+"= $stmt->rowCount();", FileWriterImpl.getInstace().fileCreate(path));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}        
+        VariableManagerImpl.getInstace().addVariable(resultVariableName, path);
+    
     }
     
     @Override
@@ -165,20 +221,24 @@ public class PHPGenericWriterImpl implements GenericWriterInterface {
         FileWriterImpl.getInstace().writeLine(phpCode, f);
         VariableManagerImpl.getInstace().addVariable(countResultVariableName, path);
     }
-
+    
     @Override
-    public void writeArithmeticAndReturn(String Arithmetic) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+    public void getLastInsertedIdIntoVariable(String path, String resultVariableName) throws VariableManagerException {
+        File f;
+        try {
+            f = FileWriterImpl.getInstace().fileCreate(path);
+        } catch (IOException ex) {
+            Logger.getLogger(PHPGenericWriterImpl.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
+        String phpCode = "$"+resultVariableName+" = $dbn->lastInsertId();";
+        FileWriterImpl.getInstace().writeLine(phpCode, f);
+        VariableManagerImpl.getInstace().addVariable(resultVariableName, path);
     }
 
-    @Override
-    public void writeArithmeticAndGetResultInVariable(String Arithmetic) {
-        throw new UnsupportedOperationException("Not supported yet."); 
-    }
     
     @Override
     public void EOF(String Path) {
-        FileWriterImpl writer =  FileWriterImpl.getInstace();
         File f ;
         try {
             f  = FileWriterImpl.getInstace().fileCreate(Path);
@@ -187,8 +247,33 @@ public class PHPGenericWriterImpl implements GenericWriterInterface {
              return;
          }
         FileWriterImpl.getInstace().writeLine("?>", f);
-        throw new UnsupportedOperationException("Not supported yet."); 
     }
+
+	@Override
+	public void printVariableAsJSON(String path, String variableName) {
+		String line="echo json_encode(\"$"+variableName+"\");";
+		try {
+			FileWriterImpl.getInstace().writeLine(line, FileWriterImpl.getInstace().fileCreate(path));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void printVariableAsXML(String path, String variableName) {
+		String line="echo xmlrpc_encode(\"$"+variableName+"\");";
+		try {
+			FileWriterImpl.getInstace().writeLine(line, FileWriterImpl.getInstace().fileCreate(path));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void writeArithmeticAndGetResultInVariable(String path, String arithmetic, VariableList variableList) {
+		//TODO
+		
+	}
 
    
     
