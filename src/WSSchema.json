@@ -1,0 +1,61 @@
+{
+  "webServiceBatch": {
+    "job": {
+      "id": "0",
+      "jobName": "test Job",
+      "tasker": [
+        {
+          "id": "0",
+          "task": "header",
+          "parameters": {
+            "var": {
+              "name": "path",
+              "values": "test.php",
+              "isObject": "false"
+            }
+          }
+        },
+        {
+          "id": "1",
+          "task": "beginTransaction",
+          "parameters": {
+            "var": {
+              "name": "path",
+              "values": "test.php",
+              "isObject": "false"
+            }
+          }
+        },
+        {
+          "id": "2",
+          "task": "endTransaction",
+          "parameters": {
+            "var": {
+              "name": "path",
+              "values": "test.php",
+              "isObject": "false"
+            }
+          }
+        },
+        {
+          "id": "3",
+          "task": "EOF",
+          "parameters": {
+            "var": [
+              {
+                "name": "path",
+                "values": "test.php",
+                "isObject": "false"
+              },
+              {
+                "name": "test2",
+                "values": "test.php",
+                "isObject": "false"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

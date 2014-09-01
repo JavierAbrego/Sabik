@@ -1,26 +1,61 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<REST>
-    <name>NombreDelServicio</name>
-    <input>parametro1</input>
-    <input>parametro2</input>
-    <var>
-        <name>nuevaVariable</name>
-        <sqlQueryAndGetResult>SELECT nombre FROM Tabla WHERE x=$parametro1</sqlQueryAndGetResult>
-    </var>
-    <output>nuevaVariable</output>        
-</REST>
-
-<REST>
-    <name>NombreDelServicio2</name>
-    <input>parametro1</input>
-    <input>parametro2</input>
-    <var>
-        <name>nuevaVariable</name>
-        <sqlQueryAndGetResult>SELECT nombre FROM Tabla WHERE x=$parametro1</sqlQueryAndGetResult>
-    </var>
-    <output>nuevaVariable</output>        
-</REST>
-
-
-
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<webServiceBatch>
+    <job>
+        <id>0</id>
+        <jobName>test Job</jobName>
+        <tasker>
+            <id>0</id>
+            <task>header</task>
+            <parameters>
+                <var>
+                    <name>path</name>
+                    <values>test.php</values>
+                    <isObject>false</isObject>
+                    <objectElements/>
+                </var>
+            </parameters>
+        </tasker>
+        <tasker>
+            <id>1</id>
+            <task>beginTransaction</task>
+            <parameters>
+                <var>
+                    <name>path</name>
+                    <values>test.php</values>
+                    <isObject>false</isObject>
+                    <objectElements/>
+                </var>
+            </parameters>
+        </tasker>
+        <tasker>
+            <id>2</id>
+            <task>endTransaction</task>
+            <parameters>
+                <var>
+                    <name>path</name>
+                    <values>test.php</values>
+                    <isObject>false</isObject>
+                    <objectElements/>
+                </var>
+            </parameters>
+        </tasker>
+        <tasker>
+            <id>3</id>
+            <task>EOF</task>
+            <parameters>
+                <var>
+                    <name>path</name>
+                    <values>test.php</values>
+                    <isObject>false</isObject>
+                    <objectElements/>
+                </var>
+                <var>
+                    <name>test2</name>
+                    <values>test.php</values>
+                    <isObject>false</isObject>
+                    <objectElements/>
+                </var>
+            </parameters>
+        </tasker>
+    </job>
+</webServiceBatch>
