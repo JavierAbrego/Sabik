@@ -1,5 +1,12 @@
 package WriterImplementation;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import Exception.DBManagerException;
 import Exception.VariableManagerException;
 import Model.DatabaseConfig;
@@ -7,17 +14,26 @@ import Model.Variable;
 import Model.VariableList;
 import WriterInterface.GenericWriterInterface;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public class PHPGenericWriterImpl implements GenericWriterInterface {
    
-    
+	private static PHPGenericWriterImpl _genericWriterImpl;
+	    
+	private PHPGenericWriterImpl() {
+	    if( _genericWriterImpl != null ) {
+	        throw new InstantiationError( "More instances of this object cannot be created." );
+	    }
+	}
+	
+	private synchronized  static void createInstance(){
+	    if(_genericWriterImpl==null){
+	    	_genericWriterImpl  = new PHPGenericWriterImpl();
+	    }
+	}
+	
+	public static  PHPGenericWriterImpl getInstace(){
+	    if(_genericWriterImpl==null) createInstance();
+	    return _genericWriterImpl;
+	}
     
     @Override
     public void header(String path) {
@@ -128,10 +144,10 @@ public class PHPGenericWriterImpl implements GenericWriterInterface {
     
     @Override
     public void endTransaction(String path){
-    	String phpCode = " $db->commit();\n" +
+    	String phpCode = " $dbn->commit();\n" +
     			"} catch(PDOException $ex) {\n" +
     			"    //Something went wrong rollback!\n" +
-    			"    $db->rollBack();\n" +
+    			"    $dbn->rollBack();\n" +
     			"    echo $ex->getMessage();\n" +
     			"}";
 		try {
@@ -240,10 +256,10 @@ public class PHPGenericWriterImpl implements GenericWriterInterface {
 
     
     @Override
-    public void EOF(String Path) {
+    public void EOF(String path) {
         File f ;
         try {
-            f  = FileWriterImpl.getInstace().fileCreate(Path);
+            f  = FileWriterImpl.getInstace().fileCreate(path);
          } catch (IOException ex) {
              Logger.getLogger(PHPGenericWriterImpl.class.getName()).log(Level.SEVERE, null, ex);
              return;
