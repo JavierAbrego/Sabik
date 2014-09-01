@@ -1,8 +1,9 @@
 package Exception;
 
 public class DBManagerException extends Exception {
-    
-    public DBManagerException(String message){
+	private static final long serialVersionUID = 5323215832303561172L;
+
+	public DBManagerException(String message){
         super(message);
     }
     

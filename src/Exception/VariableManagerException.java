@@ -1,8 +1,9 @@
 package Exception;
 
 public class VariableManagerException extends Exception {
-    
-    public VariableManagerException(String message){
+	private static final long serialVersionUID = 3331253829824368680L;
+
+	public VariableManagerException(String message){
         super(message);
     }
     
