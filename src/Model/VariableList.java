@@ -9,7 +9,14 @@ import Exception.VariableManagerException;
 public class VariableList {
     private final List<Variable> vars =  new ArrayList<>();
     
-    public void addVariable(String name, String type){
+    /**
+	 * @return the vars
+	 */
+	public List<Variable> getVars() {
+		return vars;
+	}
+
+	public void addVariable(String name, String type){
         Variable var =  new Variable.VariableBuilder()
         							.name(name)
         							.type(type)
