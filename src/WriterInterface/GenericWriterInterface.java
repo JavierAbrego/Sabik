@@ -107,7 +107,7 @@ public interface GenericWriterInterface {
      * @param arithmetic
      * @param variableList
      */
-    public void writeArithmeticAndGetResultInVariable(String path, String arithmetic, VariableList variableList);
+    public void writeArithmeticAndGetResultInVariable(String path, String arithmetic, VariableList variableList, String resultVariableName);
     
     /**
      * @param path
