@@ -1,9 +1,12 @@
 package WriterImplementation;
 
+import Model.Variable;
 import Model.VariableList;
 import WriterInterface.VariableManagerInterface;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import Exception.VariableManagerException;
 
 public class VariableManagerImpl implements VariableManagerInterface {
@@ -46,7 +49,8 @@ public class VariableManagerImpl implements VariableManagerInterface {
         if(variableList.variableExists(variableName)){
              throw new VariableManagerException("The variable with the name \""+variableName+"\" already exists.");   
         }else{
-            variableList.addVariable(variableName);
+        	Variable var = new Variable.VariableBuilder().name(variableName).type("undefined").value("none").build();
+            variableList.addVariable(var);
         }        
         return true;        
     }
