@@ -9,6 +9,8 @@ import WriterInterface.GenericWriterInterface;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -270,9 +272,18 @@ public class PHPGenericWriterImpl implements GenericWriterInterface {
 	}
 
 	@Override
-	public void writeArithmeticAndGetResultInVariable(String path, String arithmetic, VariableList variableList) {
-		//TODO
-		
+	public void writeArithmeticAndGetResultInVariable(String path, String arithmetic, VariableList variableList, String resultVariableName) {
+		List<String> values =  new ArrayList<>(); 
+		for (Variable var : variableList.getVars()) {
+			values.add("$"+var.getName());
+		}
+		String arithmeticLine = String.format(arithmetic.replace("?", "%s"), values.toArray());
+		String line = resultVariableName+"="+arithmeticLine+";";
+		try {
+			FileWriterImpl.getInstace().writeLine(line, FileWriterImpl.getInstace().fileCreate(path));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
    
