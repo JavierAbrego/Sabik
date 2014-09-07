@@ -87,11 +87,12 @@ public class PHPGenericWriterImpl implements GenericWriterInterface {
             Logger.getLogger(PHPGenericWriterImpl.class.getName()).log(Level.SEVERE, null, ex);
             return;
         }
-        FileWriterImpl.getInstace().writeLine("$_db_config_host="+host, f);
-        FileWriterImpl.getInstace().writeLine("$_db_config_port="+port, f);
-        FileWriterImpl.getInstace().writeLine("$_db_config_user="+user, f);
-        FileWriterImpl.getInstace().writeLine("$_db_config_password="+passsword, f);
-        FileWriterImpl.getInstace().writeLine("$_db_config_databaseName="+databaseName, f);
+        
+        FileWriterImpl.getInstace().writeLine("$_db_config_host=\""+host+";", f);
+        FileWriterImpl.getInstace().writeLine("$_db_config_port=\""+port+";", f);
+        FileWriterImpl.getInstace().writeLine("$_db_config_user=\""+user+";", f);
+        FileWriterImpl.getInstace().writeLine("$_db_config_password=\""+passsword+";", f);
+        FileWriterImpl.getInstace().writeLine("$_db_config_databaseName=\""+databaseName+";", f);
         EOF(filename);
         
         DatabaseConfig databaseConfig = new DatabaseConfig();
