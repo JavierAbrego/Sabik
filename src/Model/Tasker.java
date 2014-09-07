@@ -168,7 +168,7 @@ public class Tasker {
 		String host = parameters.getVariable("host").getValue();
 		String port = parameters.getVariable("port").getValue();
 		String user = parameters.getVariable("user").getValue();
-		String passsword = parameters.getVariable("passsword").getValue();
+		String passsword = parameters.getVariable("password").getValue();
 		String databaseName = parameters.getVariable("databaseName").getValue();
 		PHPGenericWriterImpl.getInstace().addDatabase(alias, host, port, user, passsword, databaseName);
 	}
