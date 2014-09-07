@@ -44,8 +44,11 @@ public class FileWriterImpl implements FileWriterInterface{
     }
 
     @Override
-    public File fileCreate(String Path) throws IOException{
-        File file = new File(Path);
+    public File fileCreate(String path) throws IOException{
+        File file = new File(path);
+        if(path.contains("/")){
+        	file.getParentFile().mkdirs();
+        }
         file.createNewFile();
         return file;
     }
