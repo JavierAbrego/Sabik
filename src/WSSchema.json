@@ -3,57 +3,82 @@
     "job": {
       "id": "0",
       "jobName": "test Job",
+      "path": "test.php",
+      "language": "PHP5_1",
       "tasker": [
         {
           "id": "0",
-          "task": "header",
-          "parameters": {
-            "var": {
-              "name": "path",
-              "values": "test.php",
-              "isObject": "false"
-            }
-          }
+          "task": "header"
         },
         {
           "id": "1",
-          "task": "beginTransaction",
+          "task": "getInputVars",
           "parameters": {
             "var": {
-              "name": "path",
-              "values": "test.php",
+              "name": "input",
+              "value": [
+                "numberA",
+                "numberB"
+              ],
               "isObject": "false"
             }
           }
         },
         {
           "id": "2",
-          "task": "endTransaction",
+          "task": "postInputVars",
           "parameters": {
             "var": {
-              "name": "path",
-              "values": "test.php",
+              "name": "input",
+              "value": [
+                "numberA",
+                "numberB"
+              ],
               "isObject": "false"
             }
           }
         },
         {
           "id": "3",
-          "task": "EOF",
+          "task": "writeArithmeticAndGetResultInVariable",
           "parameters": {
             "var": [
               {
-                "name": "path",
-                "values": "test.php",
+                "name": "arithmetic",
+                "value": "(?+?)*?",
                 "isObject": "false"
               },
               {
-                "name": "test2",
-                "values": "test.php",
+                "name": "variableList",
+                "value": [
+                  "numberA",
+                  "numberB",
+                  "numberA"
+                ],
+                "isObject": "false"
+              },
+              {
+                "name": "resultVariableName",
+                "value": "result",
                 "isObject": "false"
               }
             ]
           }
+        },
+        {
+          "id": "4",
+          "task": "printVariableAsJSON",
+          "parameters": {
+            "var": {
+              "name": "resultVariableName",
+              "value": "result",
+              "isObject": "false"
+            }
+          }
+        },
+        {
+          "id": "5",
+          "task": "EOF"
         }
       ]
     }

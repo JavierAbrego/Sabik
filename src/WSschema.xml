@@ -3,25 +3,21 @@
     <job>
         <id>0</id>
         <jobName>test Job</jobName>
+        <path>test.php</path>
+        <language>PHP5_1</language>
         <tasker>
             <id>0</id>
             <task>header</task>
-            <parameters>
-                <var>
-                    <name>path</name>
-                    <values>test.php</values>
-                    <isObject>false</isObject>
-                    <objectElements/>
-                </var>
-            </parameters>
+            <parameters/>
         </tasker>
         <tasker>
             <id>1</id>
-            <task>beginTransaction</task>
+            <task>getInputVars</task>
             <parameters>
                 <var>
-                    <name>path</name>
-                    <values>test.php</values>
+                    <name>input</name>
+                    <value>numberA</value>
+                    <value>numberB</value>
                     <isObject>false</isObject>
                     <objectElements/>
                 </var>
@@ -29,11 +25,12 @@
         </tasker>
         <tasker>
             <id>2</id>
-            <task>endTransaction</task>
+            <task>postInputVars</task>
             <parameters>
                 <var>
-                    <name>path</name>
-                    <values>test.php</values>
+                    <name>input</name>
+                    <value>numberA</value>
+                    <value>numberB</value>
                     <isObject>false</isObject>
                     <objectElements/>
                 </var>
@@ -41,21 +38,46 @@
         </tasker>
         <tasker>
             <id>3</id>
-            <task>EOF</task>
+            <task>writeArithmeticAndGetResultInVariable</task>
             <parameters>
                 <var>
-                    <name>path</name>
-                    <values>test.php</values>
+                    <name>arithmetic</name>
+                    <value>(?+?)*?</value>
                     <isObject>false</isObject>
                     <objectElements/>
                 </var>
                 <var>
-                    <name>test2</name>
-                    <values>test.php</values>
+                    <name>variableList</name>
+                    <value>numberA</value>
+                    <value>numberB</value>
+                    <value>numberA</value>
+                    <isObject>false</isObject>
+                    <objectElements/>
+                </var>
+                <var>
+                    <name>resultVariableName</name>
+                    <value>result</value>
                     <isObject>false</isObject>
                     <objectElements/>
                 </var>
             </parameters>
+        </tasker>
+        <tasker>
+            <id>4</id>
+            <task>printVariableAsJSON</task>
+            <parameters>
+                <var>
+                    <name>resultVariableName</name>
+                    <value>result</value>
+                    <isObject>false</isObject>
+                    <objectElements/>
+                </var>
+            </parameters>
+        </tasker>
+        <tasker>
+            <id>5</id>
+            <task>EOF</task>
+            <parameters/>
         </tasker>
     </job>
 </webServiceBatch>

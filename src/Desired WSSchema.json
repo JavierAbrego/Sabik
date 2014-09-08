@@ -1,0 +1,47 @@
+{
+  "webServiceBatch": {
+    "job": {
+      "id": "0",
+      "jobName": "test Job",
+      "path": "test.php",
+      "language" : "PHP5_1",
+      "tasker": [
+        {
+          "task": "header"
+        },
+        {         
+          "task": "getInputVars",
+          "parameters": [
+                "numberA",
+                "numberB"
+              ]           
+        },
+        {
+          "id": "2",
+          "task": "postInputVars",
+          "parameters":[
+                "numberA",
+                "numberB"
+              ]
+        },
+        {          
+          "task": "writeArithmeticAndGetResultInVariable",
+          "arithmetic": "(?+?)*?",
+          "parameters": [
+                  "numberA",
+                  "numberB",
+                  "numberA"
+                ],
+           "resultVariableName": "result"    
+        },
+        {
+          "task": "printVariableAsJSON",
+          "resultVariableName" : "result"          
+        },
+        {
+          "task": "EOF"
+        }
+      ]
+    }
+  }
+}
