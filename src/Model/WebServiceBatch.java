@@ -16,6 +16,10 @@ public class WebServiceBatch {
 	private List<Job> job =  new ArrayList<>();
 
 	/**
+	 * Describes a batch of jobs, jobs can be added and executed sequentially.
+	 */
+	public WebServiceBatch(){}
+	/**
 	 * @return the jobsList
 	 */
 	public List<Job> getJobsList() {
@@ -32,13 +36,15 @@ public class WebServiceBatch {
 	/**
 	 * @param jobsList
 	 */
-	public void addJob(Job jobsList) {
+	public WebServiceBatch addJob(Job jobsList) {
 		this.job.add(jobsList);
+		return this;
 	}
 	
-	public void start() throws VariableManagerException, DBManagerException{
+	public WebServiceBatch start() throws VariableManagerException, DBManagerException{
 		for (Job jb : job) {
 			jb.executeJob();			
 		}
+		return this;
 	}
 }

@@ -8,13 +8,26 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 import Exception.DBManagerException;
 import Exception.VariableManagerException;
+import Facade.TaskFacade;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Job {
 	private int id;
 	private String jobName;
+	private String path;
+	private Tasker.Language language;
 	private List<Tasker> tasker = new ArrayList<>();
 	
+	/**
+	 * Describes the tasks that will be executed by the Service, and the path where it will write those task
+	 */
+	public Job(){
+		
+	}
+	
+	public TaskFacade addTasker(){
+		return new TaskFacade(this);
+	}
 	
 	public void addTasker(Tasker tsk){
 		this.tasker.add(tsk);
@@ -33,7 +46,7 @@ public class Job {
 	
 	public void executeJob() throws VariableManagerException, DBManagerException{
 		for (Tasker tsk : tasker) {
-			tsk.executeTask();
+			tsk.executeTask(path, language);
 		}
 	}
 
@@ -45,10 +58,12 @@ public class Job {
 	}
 
 	/**
+	 * Sets an alias for the job
 	 * @param jobName the jobName to set
 	 */
-	public void setJobName(String jobName) {
+	public Job setJobName(String jobName) {
 		this.jobName = jobName;
+		return this;
 	}
 
 	/**
@@ -63,5 +78,35 @@ public class Job {
 	 */
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	/**
+	 * @return the path
+	 */
+	public String getPath() {
+		return path;
+	}
+
+	/**
+	 * @param path the path to set
+	 */
+	public Job setPath(String path) {
+		this.path = path;
+		return this;
+	}
+
+	/**
+	 * @return the language
+	 */
+	public Tasker.Language getLanguage() {
+		return language;
+	}
+
+	/**
+	 * @param language the language to set
+	 */
+	public Job setLanguage(Tasker.Language language) {
+		this.language = language;
+		return this;
 	}
 }

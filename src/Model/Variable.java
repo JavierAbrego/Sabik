@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public class Variable {
     private String name;
     private String type;
-    private List<String> values;
+    private List<String> value;
     private boolean isObject;
 	private VariableList objectElements;
     
@@ -19,7 +19,7 @@ public class Variable {
 		this.type = vb.type;
 		this.isObject = vb.isObject;
 		this.objectElements = vb.objectElements;
-		this.values = vb.values;
+		this.value = vb.value;
 	}
 	
 	/**
@@ -38,13 +38,13 @@ public class Variable {
 	public static class VariableBuilder{
 		private String name;
 	    private String type;
-	    private List<String> values =  new ArrayList<>();
+	    private List<String> value =  new ArrayList<>();
 	    private boolean isObject = false;
 		private VariableList objectElements = new VariableList();
 		
 		public VariableBuilder name(String val){this.name = val; return this;}
 		public VariableBuilder type(String val){this.type = val; return this;}
-		public VariableBuilder value(String val){this.values.add(val); return this;}
+		public VariableBuilder value(String val){this.value.add(val); return this;}
 		public VariableBuilder isObject(boolean val){this.isObject= val; return this;}
 		public VariableBuilder addField(Variable var){this.objectElements.addVariable(var);  return this;}
 //		public VariableBuilder addField(String name, String type){			
@@ -100,23 +100,30 @@ public class Variable {
 	 * @return the value
 	 */
 	public List<String> getValues() {
-		return values;
+		return value;
 	}
 	
 	/**
 	 * @return the value
 	 */
 	public String getValue() {
-		return values.get(0);
+		return value.get(0);
 	}
 
 	/**
 	 * @param value the value to set
 	 */
 	public void setValue(String value) {
-		this.values.add(value);
+		this.value.add(value);
 	}
 
+	public VariableList getValuesAsVariableList(){
+		VariableList varList =  new VariableList();
+		for (String  val : this.value) {
+			varList.addVariable(new Variable.VariableBuilder().name(val).value(val).build());
+		}
+		return varList;
+	}
     
     
     

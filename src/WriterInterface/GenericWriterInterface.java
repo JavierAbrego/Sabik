@@ -1,12 +1,10 @@
 package WriterInterface;
 
-import Exception.DBManagerException;
-
 import java.util.List;
 
+import Exception.DBManagerException;
 import Exception.VariableManagerException;
 import Model.Variable;
-import Model.VariableList;
 
 /**
  * @author abregoj
@@ -14,6 +12,7 @@ import Model.VariableList;
  */
 public interface GenericWriterInterface {
     
+	
     /**
      * @param path
      */
@@ -107,7 +106,7 @@ public interface GenericWriterInterface {
      * @param arithmetic
      * @param variableList
      */
-    public void writeArithmeticAndGetResultInVariable(String path, String arithmetic, VariableList variableList, String resultVariableName);
+    public void writeArithmeticAndGetResultInVariable(String path, String arithmetic, List<Variable> variableList, String resultVariableName);
     
     /**
      * @param path

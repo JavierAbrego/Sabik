@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import Exception.DBManagerException;
 import Exception.VariableManagerException;
 import WriterImplementation.PHPGenericWriterImpl;
+import WriterInterface.GenericWriterInterface;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Tasker {
@@ -17,6 +18,8 @@ public class Tasker {
 		getLastInsertedIdIntoVariable, writeArithmeticAndGetResultInVariable, 
 		printVariableAsJSON, printVariableAsXML, EOF
 	}
+	
+	public enum Language{PHP5_1, JAVAEE6, CSharp}
 	
 	private int id;
 	private Task task;
@@ -84,55 +87,57 @@ public class Tasker {
 		this.parameters = parameters;
 	}
 	
-	public void executeTask() throws VariableManagerException, DBManagerException{
+	public void executeTask(String pathValue, Language language) throws VariableManagerException, DBManagerException{
+		Variable path = new Variable.VariableBuilder().value(pathValue).name("path").build();
+		GenericWriterInterface genericWriter = initializeGenericWriter(language);
 		switch (task) {
 		case header:
-			header();
+			header(path, genericWriter);
 			break;
 		case getInputVars:
-			getInputVars();
+			getInputVars(path, genericWriter);
 			break;
 		case postInputVars:
-			postInputVars();
+			postInputVars(path, genericWriter);
 			break;
 		case useDatabase:
-			useDatabase();
+			useDatabase(path, genericWriter);
 			break;
 		case addDatabase:
-			addDatabase();
+			addDatabase(path, genericWriter);
 			break;
 		case beginTransaction:
-			beginTransaction();
+			beginTransaction(path, genericWriter);
 			break;
 		case endTransaction:
-			endTransaction();
+			endTransaction(path, genericWriter);
 			break;
 		case executeSqlQuery:
-			executeSqlQuery();
+			executeSqlQuery(path, genericWriter);
 			break;
 		case executeSqlQueryAndGetResultInVariable:
-			executeSqlQueryAndGetResultInVariable();
+			executeSqlQueryAndGetResultInVariable(path, genericWriter);
 			break;
 		case executeSqlUpdateAndGetAffectedRowsNumberIntoVariable:
-			executeSqlUpdateAndGetAffectedRowsNumberIntoVariable();
+			executeSqlUpdateAndGetAffectedRowsNumberIntoVariable(path, genericWriter);
 			break;
 		case countResultRowsNumberAndGetResultInVariable:
-			countResultRowsNumberAndGetResultInVariable();
+			countResultRowsNumberAndGetResultInVariable(path, genericWriter);
 			break;
 		case getLastInsertedIdIntoVariable:
-			getLastInsertedIdIntoVariable();
+			getLastInsertedIdIntoVariable(path, genericWriter);
 			break;
 		case printVariableAsJSON:
-			printVariableAsJSON();
+			printVariableAsJSON(path, genericWriter);
 			break;
 		case printVariableAsXML:
-			printVariableAsXML();
+			printVariableAsXML(path, genericWriter);
 			break;
 		case writeArithmeticAndGetResultInVariable:
-			writeArithmeticAndGetResultInVariable();
+			writeArithmeticAndGetResultInVariable(path, genericWriter);
 			break;
 		case EOF:
-			EOF();
+			EOF(path, genericWriter);
 			break;
 
 		default:
@@ -140,108 +145,103 @@ public class Tasker {
 		}
 	}
 	
-	private void header() throws VariableManagerException{
-		Variable path = parameters.getVariable("path");
-		PHPGenericWriterImpl.getInstace().header(path.getValue());
+	private GenericWriterInterface initializeGenericWriter(Language language){
+		switch (language) {
+		case PHP5_1:
+			return PHPGenericWriterImpl.getInstace();
+
+		default:
+			return PHPGenericWriterImpl.getInstace();
+		}
+	}
+	private void header(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException{
+		genericWriter.header(path.getValue());
+		
 	}
 	
-	private void getInputVars() throws VariableManagerException{
-		Variable path = parameters.getVariable("path");
+	private void getInputVars(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException{
 		Variable input = parameters.getVariable("input");
-		PHPGenericWriterImpl.getInstace().getInputVars(path.getValue(), input.getValues());;
+		genericWriter.getInputVars(path.getValue(), input.getValues());;
 	}
 	
-	private void postInputVars() throws VariableManagerException{
-		Variable path = parameters.getVariable("path");
+	private void postInputVars(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException{
 		Variable input = parameters.getVariable("input");
-		PHPGenericWriterImpl.getInstace().postInputVars(path.getValue(), input.getValues());;
+		genericWriter.postInputVars(path.getValue(), input.getValues());;
 	}
 	
-	private void useDatabase() throws VariableManagerException{
+	private void useDatabase(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException{
 		Variable alias = parameters.getVariable("alias");
-		Variable path = parameters.getVariable("path");
-		PHPGenericWriterImpl.getInstace().useDatabase(alias.getValue(), path.getValue());
+		genericWriter.useDatabase(alias.getValue(), path.getValue());
 	}
 	
-	private void addDatabase() throws VariableManagerException, DBManagerException{
+	private void addDatabase(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException, DBManagerException{
 		String alias = parameters.getVariable("alias").getValue();
 		String host = parameters.getVariable("host").getValue();
 		String port = parameters.getVariable("port").getValue();
 		String user = parameters.getVariable("user").getValue();
-		String passsword = parameters.getVariable("passsword").getValue();
+		String passsword = parameters.getVariable("password").getValue();
 		String databaseName = parameters.getVariable("databaseName").getValue();
-		PHPGenericWriterImpl.getInstace().addDatabase(alias, host, port, user, passsword, databaseName);
+		genericWriter.addDatabase(alias, host, port, user, passsword, databaseName);
 	}
 	
-	private void beginTransaction() throws VariableManagerException{
-		Variable path = parameters.getVariable("path");
-		PHPGenericWriterImpl.getInstace().beginTransaction(path.getValue());
+	private void beginTransaction(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException{
+		genericWriter.beginTransaction(path.getValue());
 	}
 	
-	private void endTransaction() throws VariableManagerException{
-		Variable path = parameters.getVariable("path");
-		PHPGenericWriterImpl.getInstace().endTransaction(path.getValue());
+	private void endTransaction(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException{
+		genericWriter.endTransaction(path.getValue());
 	}
 	
-	private void executeSqlQuery() throws VariableManagerException{
-		Variable path = parameters.getVariable("path");
+	private void executeSqlQuery(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException{
 		Variable query = parameters.getVariable("query");
 		Variable queryParameters = parameters.getVariable("queryParameters");
-		PHPGenericWriterImpl.getInstace().executeSqlQuery(path.getValue(), query.getValue(), queryParameters.getObjectElements().getVars());
+		genericWriter.executeSqlQuery(path.getValue(), query.getValue(), queryParameters.getObjectElements().getVars());
 	}
 	
-	private void executeSqlQueryAndGetResultInVariable() throws VariableManagerException{
-		Variable path = parameters.getVariable("path");
+	private void executeSqlQueryAndGetResultInVariable(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException{
 		Variable query = parameters.getVariable("query");
 		Variable queryParameters = parameters.getVariable("queryParameters");
 		Variable variableName = parameters.getVariable("variableName");
-		PHPGenericWriterImpl.getInstace().executeSqlQueryAndGetResultInVariable(path.getValue(), query.getValue(), queryParameters.getObjectElements().getVars(), variableName.getValue());
+		genericWriter.executeSqlQueryAndGetResultInVariable(path.getValue(), query.getValue(), queryParameters.getObjectElements().getVars(), variableName.getValue());
 	}
 	
-	private void executeSqlUpdateAndGetAffectedRowsNumberIntoVariable() throws VariableManagerException{
-		Variable path = parameters.getVariable("path");
+	private void executeSqlUpdateAndGetAffectedRowsNumberIntoVariable(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException{
 		Variable query = parameters.getVariable("query");
 		Variable queryParameters = parameters.getVariable("queryParameters");
 		Variable resultVariableName = parameters.getVariable("resultVariableName");
-		PHPGenericWriterImpl.getInstace().executeSqlUpdateAndGetAffectedRowsNumberIntoVariable(path.getValue(), query.getValue(), queryParameters.getObjectElements().getVars(), resultVariableName.getValue());
+		genericWriter.executeSqlUpdateAndGetAffectedRowsNumberIntoVariable(path.getValue(), query.getValue(), queryParameters.getObjectElements().getVars(), resultVariableName.getValue());
 	}
 	
-	private void countResultRowsNumberAndGetResultInVariable() throws VariableManagerException{
-		Variable path = parameters.getVariable("path");
+	private void countResultRowsNumberAndGetResultInVariable(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException{
 		Variable rowsVariableName = parameters.getVariable("rowsVariableName");
 		Variable countResultVariableName = parameters.getVariable("countResultVariableName");
-		PHPGenericWriterImpl.getInstace().countResultRowsNumberAndGetResultInVariable(path.getValue(), rowsVariableName.getValue(), countResultVariableName.getValue());
+		genericWriter.countResultRowsNumberAndGetResultInVariable(path.getValue(), rowsVariableName.getValue(), countResultVariableName.getValue());
 	}
 	
-	private void getLastInsertedIdIntoVariable() throws VariableManagerException{
-		Variable path = parameters.getVariable("path");
+	private void getLastInsertedIdIntoVariable(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException{
 		Variable resultVariableName = parameters.getVariable("resultVariableName");
-		PHPGenericWriterImpl.getInstace().getLastInsertedIdIntoVariable(path.getValue(), resultVariableName.getValue());
+		genericWriter.getLastInsertedIdIntoVariable(path.getValue(), resultVariableName.getValue());
 	}
 	
-	private void printVariableAsJSON() throws VariableManagerException{
-		Variable path = parameters.getVariable("path");
-		Variable variableName = parameters.getVariable("variableName");
-		PHPGenericWriterImpl.getInstace().printVariableAsJSON(path.getValue(), variableName.getValue());
+	private void printVariableAsJSON(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException{
+		Variable variableName = parameters.getVariable("resultVariableName");
+		genericWriter.printVariableAsJSON(path.getValue(), variableName.getValue());
 	}
 	
-	private void printVariableAsXML() throws VariableManagerException{
-		Variable path = parameters.getVariable("path");
-		Variable variableName = parameters.getVariable("variableName");
-		PHPGenericWriterImpl.getInstace().printVariableAsXML(path.getValue(), variableName.getValue());
+	private void printVariableAsXML(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException{
+		Variable variableName = parameters.getVariable("resultVariableName");
+		genericWriter.printVariableAsXML(path.getValue(), variableName.getValue());
 	}
 	
-	private void writeArithmeticAndGetResultInVariable() throws VariableManagerException{
-		Variable path = parameters.getVariable("path");
+	private void writeArithmeticAndGetResultInVariable(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException{
 		Variable arithmetic = parameters.getVariable("arithmetic");
 		Variable variableList = parameters.getVariable("variableList");
 		Variable resultVariableName = parameters.getVariable("resultVariableName");
-		PHPGenericWriterImpl.getInstace().writeArithmeticAndGetResultInVariable(path.getValue(), arithmetic.getValue(), variableList.getObjectElements(), resultVariableName.getValue());
+		genericWriter.writeArithmeticAndGetResultInVariable(path.getValue(), arithmetic.getValue(), variableList.getValuesAsVariableList().getVars(), resultVariableName.getValue());
 	}
 	
-	private void EOF() throws VariableManagerException{
-		Variable path = parameters.getVariable("path");
-		PHPGenericWriterImpl.getInstace().EOF(path.getValue());
+	private void EOF(Variable path, GenericWriterInterface genericWriter) throws VariableManagerException{
+		genericWriter.EOF(path.getValue());
 	}
 	
 }

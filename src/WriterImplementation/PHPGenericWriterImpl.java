@@ -11,7 +11,6 @@ import Exception.DBManagerException;
 import Exception.VariableManagerException;
 import Model.DatabaseConfig;
 import Model.Variable;
-import Model.VariableList;
 import WriterInterface.GenericWriterInterface;
 
 public class PHPGenericWriterImpl implements GenericWriterInterface {
@@ -30,7 +29,7 @@ public class PHPGenericWriterImpl implements GenericWriterInterface {
 	    }
 	}
 	
-	public static  PHPGenericWriterImpl getInstace(){
+	public static  GenericWriterInterface getInstace(){
 	    if(_genericWriterImpl==null) createInstance();
 	    return _genericWriterImpl;
 	}
@@ -87,11 +86,12 @@ public class PHPGenericWriterImpl implements GenericWriterInterface {
             Logger.getLogger(PHPGenericWriterImpl.class.getName()).log(Level.SEVERE, null, ex);
             return;
         }
-        FileWriterImpl.getInstace().writeLine("$_db_config_host="+host, f);
-        FileWriterImpl.getInstace().writeLine("$_db_config_port="+port, f);
-        FileWriterImpl.getInstace().writeLine("$_db_config_user="+user, f);
-        FileWriterImpl.getInstace().writeLine("$_db_config_password="+passsword, f);
-        FileWriterImpl.getInstace().writeLine("$_db_config_databaseName="+databaseName, f);
+        
+        FileWriterImpl.getInstace().writeLine("$_db_config_host=\""+host+";", f);
+        FileWriterImpl.getInstace().writeLine("$_db_config_port=\""+port+";", f);
+        FileWriterImpl.getInstace().writeLine("$_db_config_user=\""+user+";", f);
+        FileWriterImpl.getInstace().writeLine("$_db_config_password=\""+passsword+";", f);
+        FileWriterImpl.getInstace().writeLine("$_db_config_databaseName=\""+databaseName+";", f);
         EOF(filename);
         
         DatabaseConfig databaseConfig = new DatabaseConfig();
@@ -269,7 +269,7 @@ public class PHPGenericWriterImpl implements GenericWriterInterface {
 
 	@Override
 	public void printVariableAsJSON(String path, String variableName) {
-		String line="echo json_encode(\"$"+variableName+"\");";
+		String line="echo json_encode($"+variableName+");";
 		try {
 			FileWriterImpl.getInstace().writeLine(line, FileWriterImpl.getInstace().fileCreate(path));
 		} catch (IOException e) {
@@ -288,13 +288,13 @@ public class PHPGenericWriterImpl implements GenericWriterInterface {
 	}
 
 	@Override
-	public void writeArithmeticAndGetResultInVariable(String path, String arithmetic, VariableList variableList, String resultVariableName) {
+	public void writeArithmeticAndGetResultInVariable(String path, String arithmetic, List<Variable> variableList, String resultVariableName) {
 		List<String> values =  new ArrayList<>(); 
-		for (Variable var : variableList.getVars()) {
-			values.add("$"+var.getName());
+		for (Variable variable : variableList) {
+			values.add("$"+variable.getName());
 		}
 		String arithmeticLine = String.format(arithmetic.replace("?", "%s"), values.toArray());
-		String line = resultVariableName+"="+arithmeticLine+";";
+		String line = "$"+resultVariableName+"="+arithmeticLine+";";
 		try {
 			FileWriterImpl.getInstace().writeLine(line, FileWriterImpl.getInstace().fileCreate(path));
 		} catch (IOException e) {
